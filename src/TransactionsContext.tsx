@@ -1,0 +1,28 @@
+import { createContext, ReactNode, useEffect, useState } from 'react'
+import { api } from './services/api'
+
+interface Transaction {
+  id: number;
+  title: string;
+  value: number;
+  type: 'deposit' | 'witdraw';
+  category: string;
+  createdAt: string;
+}
+interface TransactionsProviderProps {
+  children: ReactNode
+}
+export const TransactionsContext = createContext<Transaction[]>([])
+
+export const TransactionsProvider = ({ children }: TransactionsProviderProps) => {
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  useEffect(() => {
+    api.get('transactions').then(res => res.data).then(res => setTransactions(res.transactions))
+  }, [])
+
+  return (
+    <TransactionsContext.Provider value={transactions}>
+      {children}
+    </TransactionsContext.Provider>
+  )
+}

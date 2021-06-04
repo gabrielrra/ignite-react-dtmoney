@@ -1,22 +1,12 @@
 import { transitions } from "polished";
-import { useEffect, useState, /*useState*/ } from "react";
+import { useContext, useEffect, useState, /*useState*/ } from "react";
 import { api } from "../../services/api";
+import { TransactionsContext } from "../../TransactionsContext";
 import { Container } from "./styles";
 
-interface Transaction {
-  id: number;
-  title: string;
-  value: number;
-  type: 'deposit' | 'witdraw';
-  category: string;
-  createdAt: string;
-}
 
 export function TransactionsTable() {
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-  useEffect(() => {
-    api.get('transactions').then(res => res.data).then(res => setTransactions(res.transactions))
-  }, [])
+  const transactions = useContext(TransactionsContext)
   return (
     <Container>
       <table>
