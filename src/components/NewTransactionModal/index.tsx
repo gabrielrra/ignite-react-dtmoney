@@ -1,45 +1,49 @@
 import Modal from 'react-modal'
-import { Container, TransactionTypesContainer, RadioBox } from './styles'
 import closeIcon from '../../assets/close.svg'
 import incomeIcon from '../../assets/entradas.svg'
 import outcomeIcon from '../../assets/saidas.svg'
-import { FormEvent, useState } from 'react'
-import { api } from '../../services/api'
+import { FormEvent, useContext, useState } from 'react'
+import { TransactionsContext } from '../../TransactionsContext'
+import { Container, TransactionTypesContainer, RadioBox } from './styles'
 
 interface NewTransactionModalProps {
   isOpen: boolean;
-  onRequestClose: () => void;
+  closeNewTransactionModal: () => void;
 }
 
-export default function NewTransactionModal({ isOpen, onRequestClose }: NewTransactionModalProps) {
+export default function NewTransactionModal({ isOpen, closeNewTransactionModal }: NewTransactionModalProps) {
 
-  const [transactionType, setTransactionType] = useState('deposit')
+  const { createTransaction } = useContext(TransactionsContext)
+  const [transactionType, setTransactionType] = useState<'deposit' | 'withdraw'>('deposit')
   const [title, setTitle] = useState('')
   const [value, setValue] = useState(0)
   const [category, setCategory] = useState('')
 
-  function handleCreateTransaction(event: FormEvent) {
+  async function handleCreateTransaction(event: FormEvent) {
+
     event.preventDefault()
 
-    const data = {
+    await createTransaction({
       title,
       value,
       type: transactionType,
       category
-    }
+    })
 
-    api.post('transactions', data)
-
-    onRequestClose()
+    closeNewTransactionModal()
+    setTransactionType('deposit')
+    setTitle('')
+    setValue(0)
+    setCategory('')
   }
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={onRequestClose}
+      onRequestClose={closeNewTransactionModal}
       overlayClassName="react-modal-overlay"
       className="react-modal-content"
     >
-      <button onClick={onRequestClose}><img src={closeIcon} alt="Close icon" className="react-modal-close" /></button>
+      <button onClick={closeNewTransactionModal}><img src={closeIcon} alt="Close icon" className="react-modal-close" /></button>
       <Container>
         <h2>Cadastrar Modal</h2>
 

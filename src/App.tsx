@@ -23,7 +23,7 @@ export function App() {
       <GlobalStyle />
       <Header openTransactionModal={handleModalOpen} />
       <Dashboard />
-      <NewTransactionModal isOpen={isTransactionModalOpen} onRequestClose={handleModalClose} />
+      <NewTransactionModal isOpen={isTransactionModalOpen} closeNewTransactionModal={handleModalClose} />
     </TransactionsProvider>
   );
 }
